@@ -18,7 +18,7 @@ class UnitTest {
         calc = new Calc();
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
         symbols.setDecimalSeparator('.');
-        calc.getDecimalformat().setDecimalFormatSymbols(symbols);
+        calc.getDecimalFormat().setDecimalFormatSymbols(symbols);
     }
 
     @Test
