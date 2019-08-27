@@ -3,7 +3,7 @@ package com.github.zieiony.calc
 import java.text.DecimalFormat
 
 enum class DelimiterType {
-    ADDSUB, MULDIV, POW
+    ADDSUB, MUL, DIVMOD, POW
 }
 
 enum class BraceType {
@@ -34,9 +34,9 @@ class Calc {
     private var delimiterMap = mapOf(
             '+' to Delimiter(DelimiterType.ADDSUB, { a: Double, b: Double -> a + b }),
             '-' to Delimiter(DelimiterType.ADDSUB, { a: Double, b: Double -> a - b }),
-            '*' to Delimiter(DelimiterType.MULDIV, { a: Double, b: Double -> a * b }),
-            '/' to Delimiter(DelimiterType.MULDIV, { a: Double, b: Double -> a / b }),
-            '%' to Delimiter(DelimiterType.MULDIV, { a: Double, b: Double -> a % b }),
+            '*' to Delimiter(DelimiterType.MUL, { a: Double, b: Double -> a * b }),
+            '/' to Delimiter(DelimiterType.DIVMOD, { a: Double, b: Double -> a / b }),
+            '%' to Delimiter(DelimiterType.DIVMOD, { a: Double, b: Double -> a % b }),
             '^' to Delimiter(DelimiterType.POW, { a: Double, b: Double -> Math.pow(a, b) }),
             '(' to Brace(BraceType.OPENING),
             ')' to Brace(BraceType.CLOSING)
@@ -76,10 +76,10 @@ class Calc {
         var result = evaluatePow()
         while (true) {
             val t = token
-            if (t is Delimiter && t.type == DelimiterType.MULDIV) {
+            if (t is Delimiter && (t.type == DelimiterType.MUL || t.type == DelimiterType.DIVMOD)) {
                 nextToken()
                 val result2 = evaluatePow()
-                if (result2 == 0.0)
+                if (result2 == 0.0 && t.type == DelimiterType.DIVMOD)
                     throw DivisionByZeroException
                 result = t.action(result, result2)
             } else {
